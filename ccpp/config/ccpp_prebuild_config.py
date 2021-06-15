@@ -159,7 +159,6 @@ SCHEME_FILES = [
     'ccpp/physics/physics/mp_thompson_pre.F90',
     'ccpp/physics/physics/mp_thompson.F90',
     'ccpp/physics/physics/mp_thompson_post.F90',
-    'ccpp/physics/physics/mp_nsslg.F90',
     'ccpp/physics/physics/ozphys.f',
     'ccpp/physics/physics/ozphys_2015.f',
     'ccpp/physics/physics/precpd.f',
@@ -302,13 +301,6 @@ OPTIONAL_ARGUMENTS = {
             'rime_factor',
             ],
         },
-    'mp_nsslg' : {
-         'mp_nsslg_run' : [
-           'effective_radius_of_stratiform_cloud_liquid_water_particle_in_um',
-           'effective_radius_of_stratiform_cloud_ice_particle_in_um',
-           'effective_radius_of_stratiform_cloud_snow_particle_in_um',
-             ],
-         },
     'rrtmgp_sw_rte' : {
          'rrtmgp_sw_rte_run' : [
              'components_of_surface_downward_shortwave_fluxes',
