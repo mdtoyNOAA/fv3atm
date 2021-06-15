@@ -195,6 +195,13 @@
   dimensions = (horizontal_loop_extent,vertical_dimension)
   type = real
   kind = kind_phys
+[qgrs(:,:,index_for_hail)]
+  standard_name = hail_mixing_ratio
+  long_name = ratio of mass of hail to mass of dry air plus vapor (without condensates)
+  units = kg kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
 [qgrs(:,:,index_for_ozone)]
   standard_name = ozone_mixing_ratio
   long_name = ozone mixing ratio
@@ -252,6 +259,41 @@
   long_name = number concentration of graupel
   units = kg-1
   dimensions = (horizontal_loop_extent,vertical_dimension)
+  type = real
+  kind = kind_phys
+[qgrs(:,:,index_for_hail_number_concentration)]
+  standard_name = hail_number_concentration
+  long_name = number concentration of hail
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[qgrs(:,:,index_for_cloud_condensation_nuclei_number_concentration)]
+  standard_name = cloud_condensation_nuclei_number_concentration
+  long_name = number concentration of cloud condensation nuclei
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[qgrs(:,:,index_for_activated_cloud_condensation_nuclei_number_concentration)]
+  standard_name = activated_cloud_condensation_nuclei_number_concentration
+  long_name = number concentration of activated cloud condensation nuclei
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[qgrs(:,:,index_for_graupel_volume)]
+  standard_name = graupel_volume
+  long_name = graupel particle volume
+  units = m3 kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[qgrs(:,:,index_for_hail_volume)]
+  standard_name = hail_volume
+  long_name = hail particle volume
+  units = m3 kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
   type = real
   kind = kind_phys
 [qgrs(:,:,index_for_turbulent_kinetic_energy)]
@@ -383,6 +425,13 @@
   dimensions = (horizontal_loop_extent,vertical_dimension)
   type = real
   kind = kind_phys
+[gq0(:,:,index_for_hail)]
+  standard_name = hail_mixing_ratio_updated_by_physics
+  long_name = ratio of mass of hail to mass of dry air plus vapor (without condensates) updated by physics
+  units = kg kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
 [gq0(:,:,index_for_mass_weighted_rime_factor)]
   standard_name = mass_weighted_rime_factor_updated_by_physics
   long_name = mass weighted rime factor updated by physics
@@ -440,6 +489,41 @@
   long_name = number concentration of graupel updated by physics
   units = kg-1
   dimensions = (horizontal_loop_extent,vertical_dimension)
+  type = real
+  kind = kind_phys
+[gq0(:,:,index_for_hail_number_concentration)]
+  standard_name = hail_number_concentration_updated_by_physics
+  long_name = number concentration of hail updated by physics
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[gq0(:,:,index_for_cloud_condensation_nuclei_number_concentration)]
+  standard_name = cloud_condensation_nuclei_number_concentration_updated_by_physics
+  long_name = number concentration of cloud condensation nuclei updated by physics
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[gq0(:,:,index_for_activated_cloud_condensation_nuclei_number_concentration)]
+  standard_name = activated_cloud_condensation_nuclei_number_concentration_updated_by_physics
+  long_name = number concentration of cloud condensation nuclei updated by physics
+  units = kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[gq0(:,:,index_for_graupel_volume)]
+  standard_name = graupel_volume_updated_by_physics
+  long_name = graupel volume updated by physics
+  units = m3 kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
+  type = real
+  kind = kind_phys
+[gq0(:,:,index_for_hail_volume)]
+  standard_name = hail_volume_updated_by_physics
+  long_name = hail volume updated by physics
+  units = m3 kg-1
+  dimensions = (horizontal_dimension,vertical_dimension)
   type = real
   kind = kind_phys
 [gq0(:,:,index_for_cloud_amount)]
@@ -2960,6 +3044,18 @@
   units = km
   dimensions = ()
   type = real
+[imp_physics_nssl2m]
+  standard_name = flag_for_nssl2m_microphysics_scheme
+  long_name = choice of NSSL 2-moment microphysics scheme
+  units = flag
+  dimensions = ()
+  type = integer
+[imp_physics_nssl2mccn]
+  standard_name = flag_for_nssl2mccn_microphysics_scheme
+  long_name = choice of NSSL 2-moment microphysics scheme with CCN
+  units = flag
+  dimensions = ()
+  type = integer
 [psautco]
   standard_name = coefficient_from_cloud_ice_to_snow
   long_name = auto conversion coeff from ice to snow
@@ -3132,6 +3228,39 @@
   dimensions = ()
   type = character
   kind = len=16
+[nssl_cccn]
+  standard_name = nssl_ccn_concentration
+  long_name = CCN concentration
+  units = m-3
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[nssl_alphah]
+  standard_name = nssl_alpha_graupel
+  long_name = graupel PSD shape parameter in NSSL micro
+  units = none
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[nssl_alphahl]
+  standard_name = nssl_alpha_hail
+  long_name = hail PSD shape parameter in NSSL micro
+  units = none
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[nssl_hail_on]
+  standard_name = nssl_hail_on
+  long_name = hail activation flag in NSSL micro
+  units = none
+  dimensions = ()
+  type = logical
+[nssl_invertccn]
+  standard_name = nssl_invertccn
+  long_name = flag to invert CCN in NSSL micro
+  units = none
+  dimensions = ()
+  type = logical
 [tf]
   standard_name = frozen_cloud_threshold_temperature
   long_name = threshold temperature below which all cloud is ice
@@ -4273,6 +4402,31 @@
   units = flag
   dimensions = ()
   type = logical
+[pert_mp]
+  standard_name = flag_for_stochastic_microphysics_perturbations
+  long_name = flag for stochastic microphysics perturbations
+  units = flag
+  dimensions = ()
+  type = logical
+[pert_clds]
+  standard_name = flag_for_stochastic_cloud_fraction_perturbations
+  long_name = flag for stochastic cloud fraction perturbations
+  units = flag
+  dimensions = ()
+  type = logical
+[sppt_amp]
+  standard_name = total_ampltiude_of_sppt_perturbation
+  long_name = toal ampltidue of stochastic sppt perturbation
+  units = none
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[pert_radtend]
+  standard_name = flag_for_stochastic_radiative_heating_perturbations
+  long_name = flag for stochastic radiative heating perturbations
+  units = flag
+  dimensions = ()
+  type = logical
 [use_zmtnblck]
   standard_name = flag_for_mountain_blocking
   long_name = flag for mountain blocking
@@ -4371,6 +4525,12 @@
   units = index
   dimensions = ()
   type = integer
+[nthl]
+  standard_name = index_for_hail
+  long_name = tracer index for hail
+  units = index
+  dimensions = ()
+  type = integer
 [ntclamt]
   standard_name = index_for_cloud_amount
   long_name = tracer index for cloud amount integer
@@ -4404,6 +4564,36 @@
 [ntgnc]
   standard_name = index_for_graupel_number_concentration
   long_name = tracer index for graupel number concentration
+  units = index
+  dimensions = ()
+  type = integer
+[nthnc]
+  standard_name = index_for_hail_number_concentration
+  long_name = tracer index for hail number concentration
+  units = index
+  dimensions = ()
+  type = integer
+[ntccn]
+  standard_name = index_for_cloud_condensation_nuclei_number_concentration
+  long_name = tracer index for cloud condensation nuclei number concentration
+  units = index
+  dimensions = ()
+  type = integer
+[ntccna]
+  standard_name = index_for_activated_cloud_condensation_nuclei_number_concentration
+  long_name = tracer index for activated cloud condensation nuclei number concentration
+  units = index
+  dimensions = ()
+  type = integer
+[ntgv]
+  standard_name = index_for_graupel_volume
+  long_name = tracer index for graupel particle volume
+  units = index
+  dimensions = ()
+  type = integer
+[nthv]
+  standard_name = index_for_hail_volume
+  long_name = tracer index for hail particle volume
   units = index
   dimensions = ()
   type = integer
@@ -5392,10 +5582,10 @@
   dimensions = (horizontal_loop_extent)
   type = real
   kind = kind_phys
-[dtdtr]
-  standard_name = tendency_of_air_temperature_due_to_radiative_heating_on_physics_time_step
-  long_name = temp. change due to radiative heating per time step
-  units = K
+[dtdtnp]
+  standard_name = tendency_of_air_temperature_to_withold_from_sppt
+  long_name = temp. change from physics that should not be perturbed by sppt
+  units = K s-1
   dimensions = (horizontal_loop_extent,vertical_dimension)
   type = real
   kind = kind_phys
@@ -6508,6 +6698,13 @@
   long_name = weights for stochastic shum perturbation, flipped
   units = none
   dimensions = (horizontal_loop_extent,vertical_dimension)
+  type = real
+  kind = kind_phys
+[sfc_wts]
+  standard_name = weights_for_stochastic_surface_physics_perturbation_flipped
+  long_name = weights for stochastic surface physics perturbation, flipped
+  units = none
+  dimensions = (horizontal_loop_extent,number_of_land_surface_variables_perturbed)
   type = real
   kind = kind_phys
 [zmtnblck]
@@ -8091,13 +8288,6 @@
   dimensions = (horizontal_loop_extent,vertical_dimension)
   type = real
   kind = kind_phys
-[dtdtc]
-  standard_name = tendency_of_air_temperature_due_to_radiative_heating_assuming_clear_sky
-  long_name = clear sky radiative (shortwave + longwave) heating rate at current time
-  units = K s-1
-  dimensions = (horizontal_loop_extent,vertical_dimension)
-  type = real
-  kind = kind_phys
 [dtsfc1]
   standard_name = instantaneous_surface_upward_sensible_heat_flux
   long_name = surface upward sensible heat flux
@@ -9064,6 +9254,12 @@
   long_name = flag to enable tracer transport by updrafts/downdrafts[(:,1)] or subsidence [(:,2)]
   units = flag
   dimensions = (number_of_tracers_plus_one,2)
+  type = logical
+[otsptflag]
+  standard_name = flag_convective_tracer_transport_interstitial
+  long_name = flag for interstitial tracer transport
+  units = flag
+  dimensions = (number_of_tracers_plus_one)
   type = logical
 [oz_coeffp5]
   standard_name = number_of_coefficients_in_ozone_forcing_data_plus_five
