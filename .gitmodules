@@ -1,12 +1,12 @@
 [submodule "atmos_cubed_sphere"]
 	path = atmos_cubed_sphere
-	url = https://github.com/JiliDong-NOAA/GFDL_atmos_cubed_sphere 
-	branch = nssl-microphysics-update 
+	url = https://github.com/NOAA-GSL/GFDL_atmos_cubed_sphere 
+	branch = RRFS_cloud_v2
 [submodule "ccpp/framework"]
 	path = ccpp/framework
 	url = https://github.com/NCAR/ccpp-framework
 	branch = main
 [submodule "ccpp/physics"]
 	path = ccpp/physics
-	url = https://github.com/JiliDong-NOAA/ccpp-physics 
-	branch = nssl-microphysics-update 
+	url = https://github.com/NOAA-GSL/ccpp-physics 
+	branch = RRFS_cloud_v2
