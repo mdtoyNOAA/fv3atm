@@ -3992,7 +3992,14 @@
   kind = kind_phys
 [pert_scale_plume]
   standard_name = plume_emissions_scaling_factor
-  long_name = Scaling factor for emissions of plume rising
+  long_name = Scaling factor for non-gbbepx emissions of plume rising
+  units = none
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[pert_scale_plume_gbbepx]
+  standard_name = plume_gbbepx_emissions_scaling_factor
+  long_name = Scaling factor for gbbepx emissions of plume rising
   units = none
   dimensions = ()
   type = real
@@ -4020,7 +4027,14 @@
   kind = kind_phys
 [emis_amp_plume]
   standard_name = plume_emissions_perturbation_amplitude
-  long_name = multiplier of emissions random perturbation of plume rise emissions
+  long_name = multiplier of emissions random perturbation of non-gbbepx plume rise emissions
+  units = none
+  dimensions = ()
+  type = real
+  kind = kind_phys
+[emis_amp_plume_gbbepx]
+  standard_name = plume_gbbepx_emissions_perturbation_amplitude
+  long_name = multiplier of emissions random perturbation of gbbepx plume rise emissions
   units = none
   dimensions = ()
   type = real
