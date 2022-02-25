@@ -60,7 +60,7 @@ module GFS_restart
 
     !--- local variables
     integer :: idx, ndiag_rst
-    integer :: ndiag_idx(20), itime
+    integer :: ndiag_idx(20)
     integer :: nblks, num, nb, max_rstrt, offset 
     character(len=2) :: c2 = ''
     
@@ -98,7 +98,11 @@ module GFS_restart
     Restart%num2d = 3 + Model%ntot2d + Model%nctp + ndiag_rst
 
     ! GF
-    if (Model%imfdeepcnv == 3) then
+    if (Model%imfdeepcnv == Model%imfdeepcnv_gf) then
+      Restart%num2d = Restart%num2d + 3
+    endif
+    ! CA
+    if (Model%imfdeepcnv == 2 .and. Model%do_ca) then
       Restart%num2d = Restart%num2d + 1
     endif
     ! NoahMP
@@ -122,8 +126,9 @@ module GFS_restart
     if(Model%lrefres) then
        Restart%num3d = Model%ntot3d+1
     endif
-    if (Model%num_dfi_radar>0) then
-      Restart%num3d = Restart%num3d + Model%num_dfi_radar
+    ! General Convection
+    if (Model%imfdeepcnv .ge. 0 .or. Model%imfshalcnv .ge. 0) then
+      Restart%num3d = Restart%num3d + 1
     endif
     ! GF
     if (Model%imfdeepcnv == 3) then
@@ -187,14 +192,33 @@ module GFS_restart
 !      print *,'in restart 2d field, Restart%name2d(',offset+idx,')=',trim(Restart%name2d(offset+idx))
     enddo
 
-    !--- RAP/HRRR-specific variables, 2D
     num = offset + ndiag_rst
+    !--- Celluluar Automaton, 2D
+    !CA
+    if (Model%imfdeepcnv == 2 .and. Model%do_ca) then
+      num = num + 1
+      Restart%name2d(num) = 'ca_condition'
+      do nb = 1,nblks
+        Restart%data(nb,num)%var2p => Coupling(nb)%condition(:)
+      enddo
+    endif
+    !--- RAP/HRRR-specific variables, 2D
     ! GF
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf) then
       num = num + 1
       Restart%name2d(num) = 'gf_2d_conv_act'
       do nb = 1,nblks
         Restart%data(nb,num)%var2p => Sfcprop(nb)%conv_act(:)
+      enddo
+      num = num + 1
+      Restart%name2d(num) = 'gf_2d_conv_act_m'
+      do nb = 1,nblks
+        Restart%data(nb,num)%var2p => Sfcprop(nb)%conv_act_m(:)
+      enddo
+      num = num + 1
+      Restart%name2d(num) = 'aod_gf'
+      do nb = 1,nblks
+        Restart%data(nb,num)%var2p => Tbd(nb)%aod_gf(:)
       enddo
     endif
     ! NoahMP
@@ -316,32 +340,21 @@ module GFS_restart
         Restart%data(nb,num)%var3p => IntDiag(nb)%refl_10cm(:,:)
       enddo
     endif
-
     if (Model%lrefres) then
        num = Model%ntot3d+1
     else
        num = Model%ntot3d
     endif
 
-    !--- RAP/HRRR-specific variables, 3D
-    ! DFI Radar
-    if (Model%num_dfi_radar > 0) then
-      do itime=1,4
-        if(Model%ix_dfi_radar(itime)>0) then
-          num = num + 1
-          if(itime==1) then
-            Restart%name3d(num) = 'radar_tten'
-          else
-            write(Restart%name3d(num),'("radar_tten_",I0)') itime
-          endif
-          do nb = 1,nblks
-            Restart%data(nb,num)%var3p => Tbd(nb)%dfi_radar_tten( &
-              :,:,Model%ix_dfi_radar(itime))
-          enddo
-        endif
+    !--Convection variable used in CB cloud fraction
+    if (Model%imfdeepcnv .ge. 0 .or. Model%imfshalcnv .ge. 0) then
+      num = num + 1
+      Restart%name3d(num) = 'cnv_3d_ud_mf'
+      do nb = 1,nblks
+        Restart%data(nb,num)%var3p => Tbd(nb)%ud_mf(:,:)
       enddo
     endif
-
+    !--- RAP/HRRR-specific variables, 3D
     ! GF
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf) then
       num = num + 1
