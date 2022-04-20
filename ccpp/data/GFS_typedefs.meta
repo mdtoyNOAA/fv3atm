@@ -7735,6 +7735,38 @@
   type = real
   kind = kind_phys
   active = (flag_for_unified_gravity_wave_physics_diagnostics)
+[ldu3dt_ogw]
+  standard_name = cumulative_change_in_x_wind_due_to_mesoscale_orographic_gravity_wave_drag
+  long_name = cumulative change in x wind due to mesoscale orographic gravity wave drag
+  units = m s-1
+  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
+  type = real
+  kind = kind_phys
+  active = (flag_for_unified_gravity_wave_physics_diagnostics .and. diag_ugwp_gsl_flag)
+[ldu3dt_obl]
+  standard_name = cumulative_change_in_x_wind_due_to_blocking_drag
+  long_name = cumulative change in x wind due to blocking drag
+  units = m s-1
+  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
+  type = real
+  kind = kind_phys
+  active = (flag_for_unified_gravity_wave_physics_diagnostics .and. diag_ugwp_gsl_flag)
+[ldu3dt_oss]
+  standard_name = cumulative_change_in_x_wind_due_to_small_scale_gravity_wave_drag
+  long_name = cumulative change in x wind due to small scale gravity wave drag
+  units = m s-1
+  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
+  type = real
+  kind = kind_phys
+  active = (flag_for_unified_gravity_wave_physics_diagnostics .and. diag_ugwp_gsl_flag)
+[ldu3dt_ofd]
+  standard_name = cumulative_change_in_x_wind_due_to_form_drag
+  long_name = cumulative change in x wind due to form drag
+  units = m s-1
+  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
+  type = real
+  kind = kind_phys
+  active = (flag_for_unified_gravity_wave_physics_diagnostics .and. diag_ugwp_gsl_flag)
 [du3dt_tms]
   standard_name = time_integral_of_change_in_x_wind_due_to_turbulent_orographic_form_drag
   long_name = time integral of change in x wind due to TOFD

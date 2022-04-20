@@ -1790,6 +1790,11 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dv3dt_ogw(:,:) => null()  !< daily aver GFS_phys tend for SN-V OGW
     real (kind=kind_phys), pointer :: dt3dt_ogw(:,:) => null()  !< daily aver GFS_phys tend for Temp OGW
 !
+    real (kind=kind_phys), pointer :: ldu3dt_ogw(:,:) => null()  !< daily aver GFS_phys tend for WE-U OGW alt
+    real (kind=kind_phys), pointer :: ldu3dt_obl(:,:) => null()  !< daily aver GFS_phys tend for WE-U OBL
+    real (kind=kind_phys), pointer :: ldu3dt_oss(:,:) => null()  !< daily aver GFS_phys tend for WE-U OSS
+    real (kind=kind_phys), pointer :: ldu3dt_ofd(:,:) => null()  !< daily aver GFS_phys tend for WE-U OFD
+!
     real (kind=kind_phys), pointer :: du3dt_mtb(:,:) => null()  !< daily aver GFS_phys tend for WE-U MTB
     real (kind=kind_phys), pointer :: dv3dt_mtb(:,:) => null()  !< daily aver GFS_phys tend for SN-V MTB
     real (kind=kind_phys), pointer :: dt3dt_mtb(:,:) => null()  !< daily aver GFS_phys tend for Temp MTB
@@ -7041,6 +7046,10 @@ module GFS_typedefs
       if (Model%ldiag_ugwp_gsl) then
          allocate (Diag%dws3dt_oss (IM,Model%levs) )
          allocate (Diag%dws3dt_ofd (IM,Model%levs) )
+         allocate (Diag%ldu3dt_ogw  (IM,Model%levs) )
+         allocate (Diag%ldu3dt_obl  (IM,Model%levs) )
+         allocate (Diag%ldu3dt_oss  (IM,Model%levs) )
+         allocate (Diag%ldu3dt_ofd  (IM,Model%levs) )
          allocate (Diag%ldu3dt_ngw (IM,Model%levs) )
          allocate (Diag%ldv3dt_ngw (IM,Model%levs) )
          allocate (Diag%ldt3dt_ngw (IM,Model%levs) )
@@ -7393,6 +7402,10 @@ module GFS_typedefs
       if (Model%ldiag_ugwp_gsl) then
          Diag%dws3dt_oss    = zero
          Diag%dws3dt_ofd    = zero
+         Diag%ldu3dt_ogw     = zero
+         Diag%ldu3dt_obl     = zero
+         Diag%ldu3dt_oss     = zero
+         Diag%ldu3dt_ofd     = zero
          Diag%ldu3dt_ngw = zero
          Diag%ldv3dt_ngw = zero
          Diag%ldt3dt_ngw = zero

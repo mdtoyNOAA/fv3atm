@@ -2848,6 +2848,54 @@ module GFS_diagnostics
           ExtDiag(idx)%data(nb)%var3 => IntDiag(nb)%dws3dt_ofd(:,:)
         enddo
 
+        idx = idx + 1
+        ExtDiag(idx)%axes = 3
+        ExtDiag(idx)%name = 'ldu3dt_ogw'
+        ExtDiag(idx)%desc = 'averaged x wind tendency due to mesoscale orographic gravity wave drag'
+        ExtDiag(idx)%unit = 'm s-2'
+        ExtDiag(idx)%mod_name = 'gfs_phys'
+        ExtDiag(idx)%time_avg = .TRUE.
+        allocate (ExtDiag(idx)%data(nblks))
+        do nb = 1,nblks
+          ExtDiag(idx)%data(nb)%var3 => IntDiag(nb)%ldu3dt_ogw(:,:)
+        enddo
+
+        idx = idx + 1
+        ExtDiag(idx)%axes = 3
+        ExtDiag(idx)%name = 'ldu3dt_obl'
+        ExtDiag(idx)%desc = 'averaged x wind tendency due to blocking drag'
+        ExtDiag(idx)%unit = 'm s-2'
+        ExtDiag(idx)%mod_name = 'gfs_phys'
+        ExtDiag(idx)%time_avg = .TRUE.
+        allocate (ExtDiag(idx)%data(nblks))
+        do nb = 1,nblks
+          ExtDiag(idx)%data(nb)%var3 => IntDiag(nb)%ldu3dt_obl(:,:)
+        enddo
+
+        idx = idx + 1
+        ExtDiag(idx)%axes = 3
+        ExtDiag(idx)%name = 'ldu3dt_ofd'
+        ExtDiag(idx)%desc = 'averaged x wind tendency due to form drag'
+        ExtDiag(idx)%unit = 'm s-2'
+        ExtDiag(idx)%mod_name = 'gfs_phys'
+        ExtDiag(idx)%time_avg = .TRUE.
+        allocate (ExtDiag(idx)%data(nblks))
+        do nb = 1,nblks
+          ExtDiag(idx)%data(nb)%var3 => IntDiag(nb)%ldu3dt_ofd(:,:)
+        enddo
+
+        idx = idx + 1
+        ExtDiag(idx)%axes = 3
+        ExtDiag(idx)%name = 'ldu3dt_oss'
+        ExtDiag(idx)%desc = 'averaged x wind tendency due to small scale gravity wave drag'
+        ExtDiag(idx)%unit = 'm s-2'
+        ExtDiag(idx)%mod_name = 'gfs_phys'
+        ExtDiag(idx)%time_avg = .TRUE.
+        allocate (ExtDiag(idx)%data(nblks))
+        do nb = 1,nblks
+          ExtDiag(idx)%data(nb)%var3 => IntDiag(nb)%ldu3dt_oss(:,:)
+        enddo
+
         ! 2D variables
 
         idx = idx + 1
