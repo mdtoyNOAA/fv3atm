@@ -69,6 +69,9 @@ module fv3atm_restart_io_mod
   !>@ Filename template for gravity wave drag small-scale orography data. FMS may add grid and tile information to the name
   character(len=32), parameter  :: fn_oro_ss = 'oro_data_ss.nc'
 
+  !>@ Filename template for gravity wave drag small-scale orography data. FMS may add grid and tile information to the name
+  character(len=32), parameter  :: fn_oro_fourier = 'new_oro_data.nc'
+
   !>@ Filename template for surface data that doesn't fall under other categories. FMS may add grid and tile information to the name
   character(len=32), parameter  :: fn_srf    = 'sfc_data.nc'
 
@@ -593,11 +596,12 @@ contains
     type(rrfs_sd_emissions_type) :: rrfs_sd_emis
     type(Oro_scale_io_data_type) :: oro_ss
     type(Oro_scale_io_data_type) :: oro_ls
+    type(Oro_fourier_io_data_type) :: oro_fourier
     type(Sfc_io_data_type) :: sfc
     type(Oro_io_data_type) :: oro
 
     type(FmsNetcdfDomainFile_t) :: Oro_restart, Sfc_restart, dust12m_restart, emi_restart, rrfssd_restart
-    type(FmsNetcdfDomainFile_t) :: Oro_ls_restart, Oro_ss_restart
+    type(FmsNetcdfDomainFile_t) :: Oro_ls_restart, Oro_ss_restart, Oro_fourier_restart
     type(domain2D) :: domain_for_read
     integer :: read_layout(2)
 
@@ -717,6 +721,22 @@ contains
       call read_restart(Oro_ss_restart, ignore_checksum=ignore_rst_cksum)
       call close_file(Oro_ss_restart)
       call oro_ss%copy(Model,Sfcprop,Atm_block,15)
+
+      if ( (Model%gwd_opt==2 .or. Model%gwd_opt==22) .and. &
+           Model%do_fourier_drag_ls_bl ) then
+        !--- open restart file
+        infile=trim(indir)//'/'//trim(fn_oro_fourier)
+        amiopen=open_file(Oro_fourier_restart, trim(infile), 'read', domain=fv_domain, is_restart=.true., dont_add_res_to_filename=.true.)
+        if( .not.amiopen ) call mpp_error( FATAL, 'Error with opening file '//trim(infile) )
+        call oro_fourier%register(Model,Oro_fourier_restart,Atm_block)
+        call mpp_error(NOTE,'reading topographic/orographic information from &
+             &INPUT/new_oro_data.tile*.nc')
+        call read_restart(Oro_fourier_restart, ignore_checksum=ignore_rst_cksum)
+        call close_file(Oro_fourier_restart)
+        call oro_fourier%copy(Model,Sfcprop,Atm_block,25)
+      endif
+
+
     end if
 
     !--- SURFACE FILE

@@ -14,6 +14,7 @@ module fv3atm_oro_io
 
   public :: Oro_io_data_type, Oro_io_register, Oro_io_copy, Oro_io_final
   public :: Oro_scale_io_data_type, Oro_scale_io_register, Oro_scale_io_copy, Oro_scale_io_final
+  public :: Oro_fourier_io_data_type, Oro_fourier_io_register, Oro_fourier_io_copy, Oro_fourier_io_final
 
   !>\defgroup fv3atm_oro_io FV3ATM Orography I/O Module
   !> @{
@@ -39,11 +40,24 @@ module fv3atm_oro_io
     final :: Oro_scale_io_final
   end type Oro_scale_io_data_type
 
+  !> Storage of working arrays for reading large-scale Fourier orography data for new gravity wave drag scheme.
+  type Oro_fourier_io_data_type
+    character(len=32),    pointer, private, dimension(:)       :: name4 => null() !< Array containing names of oro fields
+    real(kind=kind_phys), pointer, private, dimension(:,:,:)   :: var4  => null() !< Array containing oro field data
+  contains
+    procedure, public :: register => Oro_fourier_io_register
+    procedure, public :: copy => Oro_fourier_io_copy
+    final :: Oro_fourier_io_final
+  end type Oro_fourier_io_data_type
+
   !> Number of two-dimensional orography fields (excluding large- and small-scale)
   integer, parameter :: nvar_oro_2d  = 19
 
   !> Number of large-scale and small-scale orography fields
   integer, parameter :: nvar_oro_scale = 10
+
+  !> Number of new Fourier-based orographic gravity wave drag fields
+  integer, parameter :: nvar_oro_fourier = 4
 
 contains
 
@@ -365,4 +379,109 @@ contains
 
 #undef IF_ASSOC_DEALLOC_NULL
   end subroutine Oro_scale_io_final
+
+  !> @brief Registers axes and fields for non-quilt restart reading of new Fourier-based orography variables.
+  !> @details  Variables in the Fourier-based orography data.
+  !>
+  !> @param[in] oro_fourier Storage of working arrays for oro data for Fourier-based gravity wave drag schemes.
+  !> @param[in] Model Model control parameters input from a nml and/or derived from others.
+  !> @param[in] Oro_fourier_restart FMS restart file handle for restart Fourier orography data.
+  !> @param[in] Atm_block Physics block layout information.
+  !>
+  !> @author Michael Toy @date May 12, 2026
+  subroutine Oro_fourier_io_register(oro_fourier, Model, Oro_fourier_restart, Atm_block)
+    implicit none
+    class(Oro_fourier_io_data_type) :: oro_fourier
+    type(GFS_control_type),      intent(in) :: Model
+    type(FmsNetcdfDomainFile_t) :: Oro_fourier_restart
+    type(block_control_type), intent(in) :: Atm_block
+
+    real(kind=kind_phys), pointer, dimension(:,:)   :: var4_p  => NULL()
+    integer :: num, nx, ny
+
+#define WARN_DISASSOCIATE(name) \
+    if(associated(name)) then ; \
+      write(0,*) 'Internal error. Called oro_fourier%register twice. Will try to keep going anyway.' ; \
+      deallocate(name); \
+      nullify(name) ; \
+    endif
+
+    WARN_DISASSOCIATE(oro_fourier%name4)
+    WARN_DISASSOCIATE(oro_fourier%var4)
+#undef WARN_DISASSOCIATE
+
+    call get_nx_ny_from_atm(Atm_block, nx, ny)
+
+    !--- allocate the various containers needed for orography data
+    allocate(oro_fourier%name4(nvar_oro_fourier))
+    allocate(oro_fourier%var4(nx,ny,nvar_oro_fourier))
+
+    oro_fourier%name4(1)  = 'F_1'
+    oro_fourier%name4(2)  = 'F_2'
+    oro_fourier%name4(3)  = 'F_3'
+    oro_fourier%name4(4)  = 'h_amp'
+
+    call register_axis(Oro_fourier_restart, "lon", 'X')
+    call register_axis(Oro_fourier_restart, "lat", 'Y')
+
+    do num = 1,nvar_oro_fourier
+      var4_p => oro_fourier%var4(:,:,num)
+      call register_restart_field(Oro_fourier_restart, oro_fourier%name4(num), var4_p, dimensions=(/'lon','lat'/))
+    enddo
+  end subroutine Oro_fourier_io_register
+
+  !> @brief Copies Fourier-based orography data from temporary arrays back to Sfcprop grid arrays.
+  !> @details After reading the restart, data is on temporary arrays with x-y data storage.
+  !>  This subroutine copies the x-y fields to Sfcprop's blocked grid storage arrays.
+  !>
+  !> @param[in] oro Storage of working arrays for reading orography data.
+  !> @param[in] Sfcprop Surface properties that may be read in and/or updated by climatology or observations.
+  !> @param[in] Atm_block Physics block layout information.
+  !> @param[in] first_index Starding index of relevant data in second dimension of Sfcprop%hprime. 
+  !>
+  !> @author Michael Toy @date May 13, 2026
+  subroutine Oro_fourier_io_copy(oro_fourier, Model, Sfcprop, Atm_block, first_index)
+    implicit none
+    class(Oro_fourier_io_data_type) :: oro_fourier
+    type(GFS_control_type),   intent(in) :: Model
+    type(GFS_sfcprop_type)               :: Sfcprop
+    type(block_control_type), intent(in) :: Atm_block
+    integer, intent(in) :: first_index
+
+    integer :: i,j,nb,ix,num,v,im
+
+    !$OMP PARALLEL DO PRIVATE(nb,ix,i,j,v,im)
+    do nb = 1, Atm_block%nblks
+      !--- 2D variables
+      do ix = 1, Atm_block%blksz(nb)
+        i = Atm_block%index(nb)%ii(ix) - Atm_block%isc + 1
+        j = Atm_block%index(nb)%jj(ix) - Atm_block%jsc + 1
+        im = Model%chunk_begin(nb)+ix-1
+        do v=1,nvar_oro_fourier
+          Sfcprop%hprime(im,first_index-1+v)  = oro_fourier%var4(i,j,v)
+        enddo
+      enddo
+    enddo
+  end subroutine Oro_fourier_io_copy
+
+  !> @brief Oro_fourier_io_data_type destructor
+  !>
+  !> @param[in] oro_fourier Storage of working arrays for reading Fourier-based orography data.
+  !>
+  !> @author Michael Toy @date May 13, 2026
+  subroutine Oro_fourier_io_final(oro_fourier)
+    implicit none
+    type(Oro_fourier_io_data_type) :: oro_fourier
+
+#define IF_ASSOC_DEALLOC_NULL(vvarr) \
+    if(associated(oro_fourier%vvarr)) then ; \
+      deallocate(oro_fourier%vvarr) ; \
+      nullify(oro_fourier%vvarr) ; \
+    endif
+
+    IF_ASSOC_DEALLOC_NULL(name4)
+    IF_ASSOC_DEALLOC_NULL(var4)
+
+#undef IF_ASSOC_DEALLOC_NULL
+  end subroutine Oro_fourier_io_final
 end module fv3atm_oro_io
