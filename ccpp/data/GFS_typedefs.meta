@@ -7974,6 +7974,12 @@
   units = flag
   dimensions = ()
   type = logical
+[do_fourier_drag_ls_bl]
+  standard_name = do_fourier_based_mesoscale_orographic_and_blocking_drag
+  long_name = flag to activate Fourier-based orographic drag - mesoscale GWD and blocking
+  units = flag
+  dimensions = ()
+  type = logical
 [do_gwd_opt_psl]
   standard_name = do_gsl_drag_suite_with_psl_gwd_option
   long_name = flag to activate PSL drag suite - mesoscale GWD and blocking

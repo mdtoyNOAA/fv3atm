@@ -1199,6 +1199,7 @@ module GFS_typedefs
     logical              :: do_gsl_drag_ls_bl    !< flag for GSL drag (mesoscale GWD and blocking only)
     logical              :: do_gsl_drag_ss       !< flag for GSL drag (small-scale GWD only)
     logical              :: do_gsl_drag_tofd     !< flag for GSL drag (turbulent orog form drag only)
+    logical              :: do_fourier_drag_ls_bl !< flag for Fourier-based orographic GWD (mesoscale and blocking) 
     logical              :: do_gwd_opt_psl       !< flag for PSL drag (mesoscale GWD and blocking only)
     logical              :: do_ugwp_v1           !< flag for version 1 ugwp GWD
     logical              :: do_ugwp_v1_orog_only !< flag for version 1 ugwp GWD (orographic drag only)
@@ -3828,6 +3829,7 @@ module GFS_typedefs
     logical              :: do_gsl_drag_ls_bl    = .false.      !< flag for GSL drag (mesoscale GWD and blocking only)
     logical              :: do_gsl_drag_ss       = .false.      !< flag for GSL drag (small-scale GWD only)
     logical              :: do_gsl_drag_tofd     = .false.      !< flag for GSL drag (turbulent orog form drag only)
+    logical              :: do_fourier_drag_ls_bl = .false.     !< flag for Fourier-based orographic GWD (mesoscale and blocking) 
     logical              :: do_gwd_opt_psl       = .false.      !< flag for PSL drag (mesoscale GWD and blocking only)
     logical              :: do_ugwp_v1           = .false.      !< flag for version 1 ugwp GWD
     logical              :: do_ugwp_v1_orog_only = .false.      !< flag for version 1 ugwp GWD (orographic drag only)
@@ -4283,7 +4285,7 @@ module GFS_typedefs
                                gwd_opt, do_ugwp_v0, do_ugwp_v0_orog_only,                   &
                                do_ugwp_v0_nst_only,                                         &
                                do_gsl_drag_ls_bl, do_gsl_drag_ss, do_gsl_drag_tofd,         &
-                               do_gwd_opt_psl, do_ngw_ec,                                   &
+                               do_fourier_drag_ls_bl, do_gwd_opt_psl, do_ngw_ec,            &
                                do_ugwp_v1, do_ugwp_v1_orog_only,  do_ugwp_v1_w_gsldrag,     &
                                ugwp_seq_update, var_ric, coef_ric_l, coef_ric_s, hurr_pbl,  &
                                do_myjsfc, do_myjpbl,                                        &
@@ -5297,11 +5299,19 @@ module GFS_typedefs
     Model%do_gsl_drag_ls_bl    = do_gsl_drag_ls_bl
     Model%do_gsl_drag_ss       = do_gsl_drag_ss
     Model%do_gsl_drag_tofd     = do_gsl_drag_tofd
+    Model%do_fourier_drag_ls_bl = do_fourier_drag_ls_bl
     Model%do_gwd_opt_psl       = do_gwd_opt_psl
     Model%do_ngw_ec            = do_ngw_ec
     Model%do_ugwp_v1           = do_ugwp_v1
     Model%do_ugwp_v1_orog_only = do_ugwp_v1_orog_only
     Model%do_ugwp_v1_w_gsldrag = do_ugwp_v1_w_gsldrag
+    ! Adding Fourier-based orographic GWD option
+    if ( (Model%gwd_opt==2 .or. Model%gwd_opt==22) .and. &
+         Model%do_fourier_drag_ls_bl ) then
+       ! Add 4 more orographic static fields for Fourier orographic GWD scheme
+       Model%nmtvr = 28
+    end if
+
 !
 ! consistency in application of the combined ugwp-v1 and gsldrag
 !
@@ -5313,6 +5323,7 @@ module GFS_typedefs
        Model%do_gsl_drag_ls_bl    = .true.
        Model%do_gsl_drag_tofd     = .true.
        Model%do_gsl_drag_ss       = .true.
+       Model%do_fourier_drag_ls_bl = .false.
        Model%do_ugwp_v1_orog_only = .false.
        Model%do_gwd_opt_psl       = .true.
     endif
@@ -7237,6 +7248,7 @@ module GFS_typedefs
       print *, ' do_gsl_drag_ls_bl    : ', Model%do_gsl_drag_ls_bl
       print *, ' do_gsl_drag_ss       : ', Model%do_gsl_drag_ss
       print *, ' do_gsl_drag_tofd     : ', Model%do_gsl_drag_tofd
+      print *, ' do_fourier_drag_ls_bl: ', Model%do_fourier_drag_ls_bl
       print *, ' do_gwd_opt_psl       : ', Model%do_gwd_opt_psl
       print *, ' do_ugwp_v1           : ', Model%do_ugwp_v1
       print *, ' do_ngw_ec            : ', Model%do_ngw_ec
