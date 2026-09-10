@@ -1455,6 +1455,22 @@
   type = real
   kind = kind_phys
   active = (control_for_drag_suite_gravity_wave_drag == 2 .or. control_for_drag_suite_gravity_wave_drag == 3 .or. control_for_drag_suite_gravity_wave_drag == 22 .or. control_for_drag_suite_gravity_wave_drag == 33)
+[F_n]
+  standard_name = integrated_horizontal_wave_number_power_spectra_of_subgrid_scale_topography
+  long_name = integral of horizontal wave-number power spectra of subrid-scale topography
+  units = m
+  dimensions = (horizontal_dimension,3)
+  type = real
+  kind = kind_phys
+  active = (control_for_drag_suite_gravity_wave_drag == 2 .or. control_for_drag_suite_gravity_wave_drag == 3 .or. control_for_drag_suite_gravity_wave_drag == 22 .or. control_for_drag_suite_gravity_wave_drag == 33)
+[h_amp]
+  standard_name = maximum_orographic_amplitude_for_subgrid_scale_blocking
+  long_name = maximum orographic amplitude for subgrid-scale blocking
+  units = m
+  dimensions = (horizontal_dimension)
+  type = real
+  kind = kind_phys
+  active = (control_for_drag_suite_gravity_wave_drag == 2 .or. control_for_drag_suite_gravity_wave_drag == 3 .or. control_for_drag_suite_gravity_wave_drag == 22 .or. control_for_drag_suite_gravity_wave_drag == 33)
 [olyr]
   standard_name = ozone_concentration_at_layer_for_radiation
   long_name = ozone concentration layer

@@ -384,6 +384,8 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: ocss(:)            => null()  !<
     real (kind=kind_phys), pointer      :: oa4ss(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: clxss(:,:)         => null()  !<
+    real (kind=kind_phys), pointer      :: F_n(:,:)           => null()  !<
+    real (kind=kind_phys), pointer      :: h_amp(:)           => null()  !<
 
     !-- 3D diagnostics
     integer :: rtg_ozone_index, rtg_tke_index
@@ -794,6 +796,13 @@ contains
        allocate (Interstitial%oa4ss           (ixs:ixe,4))
        allocate (Interstitial%clxss           (ixs:ixe,4))
     end if
+
+!-- UGWP drag with Fourier OGWD option
+    if ((Model%gwd_opt==2 .or. Model%gwd_opt==22).and. &
+         Model%do_fourier_drag_ls_bl) then
+       allocate (Interstitial%F_n          (ixs:ixe,3))
+       allocate (Interstitial%h_amp        (ixs:ixe))
+    end if
 !
     ! Allocate arrays that are conditional on physics choices
     if (Model%imp_physics == Model%imp_physics_gfdl .or. Model%imp_physics == Model%imp_physics_thompson &
@@ -1140,6 +1149,13 @@ contains
        deallocate (Interstitial%ocss)
        deallocate (Interstitial%oa4ss)
        deallocate (Interstitial%clxss)
+    end if
+
+!-- UGWP drag with Fourier OGWD option
+    if ((Model%gwd_opt==2 .or. Model%gwd_opt==22).and. &
+         Model%do_fourier_drag_ls_bl) then
+       deallocate (Interstitial%F_n)
+       deallocate (Interstitial%h_amp)
     end if
 
     ! Allocate arrays that are conditional on physics choices
@@ -1699,6 +1715,13 @@ contains
        Interstitial%ocss         = clear_val
        Interstitial%oa4ss        = clear_val
        Interstitial%clxss        = clear_val
+    end if
+
+!-- UGWP drag with Fourier OGWD option
+    if ((Model%gwd_opt==2 .or. Model%gwd_opt==22).and. &
+         Model%do_fourier_drag_ls_bl) then
+       Interstitial%F_n          = clear_val
+       Interstitial%h_amp        = clear_val
     end if
 !
     ! Allocate arrays that are conditional on physics choices
